@@ -34,6 +34,9 @@ const authenticate = require('./middleware/authenticate')
 const AuthRoute = require('./routes/auth')
 app.use('/api', AuthRoute)
 
+const CardRoute = require('./routes/cards')
+app.use('/api', authenticate, CardRoute)
+
 app.get("/", (req, res) => {
   res.render("index");
 });
