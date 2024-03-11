@@ -14,4 +14,6 @@ router.delete('/remove_card', FlashcardsConroller.remove)
 // get flashcards and decks
 router.get('/decks', FlashcardsConroller.decks)
 
+router.get('/review', FlashcardsConroller.to_review)
+
 module.exports = router

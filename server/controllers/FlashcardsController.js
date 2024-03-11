@@ -129,6 +129,28 @@ const decks = (req, res, next) => {
   });
 }
 
+const to_review = (req, res) => {
+    Deck.findOne({ name: req.body.name, user: req.userInfo.username })
+    .then(deck => {
+        const flashcards = deck.flashcards;
+        console.log(flashcards);
+        currentTime = Date.now();
+        let cards_to_review = [];
+        flashcards.forEach(card => {
+            const reviewed_time = Date.parse(card.reviewed_time);
+            const next_review = Date.parse(card.next_review);
+
+            const time_until_review = (currentTime-next_review) - reviewed_time
+          
+            if (time_until_review <= 0) {
+                cards_to_review.push(card);
+            }
+            
+        })
+        res.json(cards_to_review);
+    });
+}
+
 module.exports = {
   // creating decks and flashcards and editing and deleting cards
   create,
@@ -138,5 +160,6 @@ module.exports = {
   remove,
 
   // getting decks
-  decks
+  decks,
+  to_review
 }
