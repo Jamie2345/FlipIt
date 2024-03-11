@@ -29,3 +29,15 @@
   font-size: 1.2rem;
   margin-bottom: 20px;
 }
+
+.authentication-options {
+  position: fixed;
+  padding: 20px;
+  right: 20px;
+  display: flex;
+}
+
+.authentication-options a {
+  margin-right: 20px;
+  color: #fff;
+}
