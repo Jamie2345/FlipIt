@@ -151,6 +151,98 @@ const to_review = (req, res) => {
     });
 }
 
+const answer = (req, res) => {
+  const { name, cardIndex, difficulty } = req.body;
+  console.log(difficulty);
+  function getDiffMultiplier(diff) {
+    console.log(diff);
+    const EASY_FACTOR = 2.5
+    const GOOD_FACTOR = 1.8
+    const NEW_FACTOR = 1.5
+    const HARD_FACTOR = 1.2
+    const VERY_HARD_FACTOR = 1.0
+
+    let multiplier;
+    if (diff=="New") {
+      multiplier = NEW_FACTOR;
+    }
+    else if (diff=="Easy") {
+      multiplier = EASY_FACTOR;
+    }
+    else if (diff=="Good") {
+      multiplier = GOOD_FACTOR;
+    }
+    else if (diff=="Hard") {
+      multiplier = HARD_FACTOR;
+    }
+    else if (diff=="Very Hard") {
+      multiplier = VERY_HARD_FACTOR;
+    }
+    else {
+      multiplier = GOOD_FACTOR;
+    }
+
+    return multiplier;
+  }
+
+  Deck.findOne({ name: name, user: req.userInfo.username })
+  .then(deck => {
+    const card = deck.flashcards[cardIndex];
+    const multiplier1 = getDiffMultiplier(difficulty)
+    const multiplier2 = getDiffMultiplier(card.difficulty)
+
+    let time_to_wait = ((((multiplier1*multiplier2)**2) * (card.reviews+1)**1.75) * (1000**2)) + 300000 // 5 min smallest
+    const stoppingLim = 5097600000;   // 2 months in milliseconds
+
+    if (time_to_wait > stoppingLim) {
+      time_to_wait = stoppingLim;
+    }
+
+    function convertMilliseconds(milliseconds) {
+      // Create a Date object with the provided milliseconds
+      let date = new Date(milliseconds);
+  
+      // Extract years, months, days, hours, minutes, and seconds from the Date object
+      let years = date.getUTCFullYear() - 1970; // Subtract 1970 to get years since Unix epoch
+      let months = date.getUTCMonth();
+      let days = date.getUTCDate() - 1; // Subtract 1 to adjust for zero-based indexing
+      let hours = date.getUTCHours();
+      let minutes = date.getUTCMinutes();
+      let seconds = date.getUTCSeconds();
+  
+      // Add leading zeros for single-digit components
+      years = years < 10 ? "0" + years : years;
+      months = months < 10 ? "0" + months : months;
+      days = days < 10 ? "0" + days : days;
+      hours = hours < 10 ? "0" + hours : hours;
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
+  
+      return `${years}:${months}:${days}:${hours}:${minutes}:${seconds}`;
+    }
+  
+    // Example usage
+    let duration = convertMilliseconds(time_to_wait);
+    console.log(duration);
+  
+
+    console.log(time_to_wait)
+
+    // update deck database
+
+    deck.flashcards[cardIndex].reviews = card.reviews + 1;
+    deck.flashcards[cardIndex].next_review = time_to_wait;
+    deck.flashcards[cardIndex].difficulty = difficulty;
+    deck.flashcards[cardIndex].wait_time = duration;
+   
+    deck.save()
+    .then(savedDeck => {
+      console.log(savedDeck)
+      res.json(savedDeck)
+    })
+  });
+};
+
 module.exports = {
   // creating decks and flashcards and editing and deleting cards
   create,
@@ -161,5 +253,7 @@ module.exports = {
 
   // getting decks
   decks,
-  to_review
+  to_review,
+
+  answer
 }

@@ -10,7 +10,7 @@ const cardSchema = new Schema({
     type: String,
     required: true
   },
-  dificulty: {
+  difficulty: {
     type: String,
     default: 'New'
   },
@@ -19,6 +19,13 @@ const cardSchema = new Schema({
     default: Date.now
   },
   next_review: {
+    type: Number,
+    default: 0
+  },
+  wait_time: {
+    type: String,
+  },
+  reviews: {
     type: Number,
     default: 0
   }
