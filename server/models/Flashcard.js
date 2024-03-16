@@ -25,6 +25,9 @@ const cardSchema = new Schema({
   wait_time: {
     type: String,
   },
+  next_review_time: {
+    type: String,
+  },
   reviews: {
     type: Number,
     default: 0

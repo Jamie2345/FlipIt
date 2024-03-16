@@ -53,6 +53,12 @@ app.get("/home", authenticate, (req, res) => {
   res.render("home");
 });
 
+app.get("/review/:deckname", authenticate, (req, res) => {
+  const name = req.params.deckname
+  console.log(name);
+  res.render("recall", {name: name});
+});
+
 server.listen(port, () => {
   console.log(`server listening on http://localhost:${port}`);
 });

@@ -15,6 +15,7 @@ router.delete('/remove_card', FlashcardsConroller.remove)
 router.get('/decks', FlashcardsConroller.decks)
 
 router.get('/review', FlashcardsConroller.to_review)
+router.get('/nearest_card_time', FlashcardsConroller.next_card_time)
 router.post('/answer', FlashcardsConroller.answer)
 
 module.exports = router
