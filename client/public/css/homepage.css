@@ -1,0 +1,86 @@
+.sub-values {
+  display: none;
+}
+
+.sub-values td {
+  padding-left: 20px; /* Adjust the indentation as needed */
+}
+
+.decks-table {
+  border-collapse: collapse;
+  border: none;
+  margin: 25px 0;
+  font-size: 1em;
+  min-width: 600px;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  background-color: var(--tertiary);
+}
+
+.decks-table a {
+  color: #333;
+}
+
+.decks-table thead tr {
+  background-color: var(--tertiary);
+  font-weight: bold;  
+}
+
+.decks-table th,
+.decks-table td {
+  padding: 12px 15px;
+}
+
+.decks-table tbody tr {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  color: #111;
+  transition: 0.5s ease color;
+}
+
+.decks-table tbody tr:hover {
+  background-color: #dedede;
+}
+
+.decks-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.decks-table tbody tr:nth-of-type(even):hover {
+  background-color: #dedede;
+}
+
+
+.decks-table tbody tr:last-of-type {
+  border-bottom: 2px solid var(--tertiary);
+}
+
+.decks-table .new-cards {
+  color: #191970;
+}
+
+.decks-table .learning-cards {
+  color: #F87171;
+}
+
+.decks-table .due-cards {
+  color: #22B558;
+}
+
+td, th {
+  text-align: center;
+}
+
+.left-align {
+  text-align: left;
+}
+
+.main-home-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}

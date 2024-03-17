@@ -31,6 +31,10 @@ const cardSchema = new Schema({
   reviews: {
     type: Number,
     default: 0
+  },
+  active: {
+    type: Boolean,
+    default: false
   }
 });
 

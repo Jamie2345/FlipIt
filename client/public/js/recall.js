@@ -189,7 +189,7 @@ function nextCard() {
         nextCard.classList.remove('hidden');
     }
     currentCard.classList.add('slide');
-    currentCard.style.zIndex = currentIndex + 10 + 1;
+    // currentCard.style.zIndex = (cardStack.length + 10) - currentIndex;
     //currentCard.classList.add('hidden');
     currentIndex++;
 }

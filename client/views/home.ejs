@@ -4,8 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/homepage.css">
 </head>
 <body>
-  <h1>Logged in</h1>
+  <div class="main-home-container">
+    <table class="decks-table">
+      <thead>
+        <tr>
+          <th class="left-align">Deck</th>
+          <th>New</th>
+          <th>Learn</th>
+          <th>Due</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+      </tbody>
+    </table>
+  </div>
+  <script src="/js/subtoggle.js"></script>
+  <script src="/js/deckstable.js"></script>
+  <script>
+    displayDecks();
+  </script>
 </body>
 </html>

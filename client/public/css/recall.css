@@ -52,6 +52,8 @@ body {
   
   .card.hidden {
     opacity: 0;
+    display: none;
+    pointer-events: none;
   }
   
   .card.slide {
@@ -100,6 +102,8 @@ body {
     100% {
       transform: translateX(0);
       opacity: 0;
+      display: none;
+      pointer-events: none;
     }
   }
 

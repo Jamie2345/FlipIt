@@ -159,11 +159,50 @@ const remove = (req, res, next) => {
 };
 
 const decks = (req, res, next) => {
+  const allDecks = [];
   Deck.find({ user: req.userInfo.username })
     .then((decks) => {
-      return res.json(decks);
+      decks.forEach(deck => {
+        const flashcards = deck.flashcards;
+        console.log(flashcards);
+        currentTime = Date.now();
+        let reviewCount = 0;
+        let learningCount = 0;
+        let newCount = 0;
+        flashcards.forEach((card) => {
+          const reviewed_time = Date.parse(card.reviewed_time);
+          const next_review = card.next_review;
+          const reviews = card.reviews;
+          const difficulty = card.difficulty;
+  
+          const time_until_review = next_review + reviewed_time - currentTime;
+          console.log(time_until_review);
+
+          if (time_until_review <= 0) {
+            reviewCount++;
+          }
+
+          if (reviews <= 3 && (difficulty === 'Hard' || difficulty === 'Very Hard')) {
+            learningCount ++;
+          }
+
+          if (difficulty == 'New') {
+            newCount ++;
+          }
+
+        });
+        const newObj = {
+          ...deck.toObject(),
+          to_review: reviewCount,
+          learning: learningCount,
+          new: newCount,
+        }
+        allDecks.push(newObj)
+      })
+      return res.json(allDecks);
     })
     .catch((err) => {
+      console.log(err)
       res.json({
         message: "error getting decks please try again",
       });
