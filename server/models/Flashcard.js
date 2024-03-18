@@ -34,7 +34,7 @@ const cardSchema = new Schema({
   },
   active: {
     type: Boolean,
-    default: false
+    default: true
   }
 });
 

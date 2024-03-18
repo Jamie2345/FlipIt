@@ -105,6 +105,33 @@ const add = (req, res, next) => {
     });
 };
 
+const bulk_add = (req, res) => {
+  const body = req.body;
+  const cards = body.cards;
+  
+  Deck.findOneAndUpdate(
+    { name: body.name, user: req.userInfo.username },
+    { $push: { flashcards: cards } }, // Using $each with the entire cards array
+    { new: true }
+  )
+  .then((updatedDeck) => {
+    if (updatedDeck) {
+      // do something with the updated deck
+      updatedDeck.save().then((savedDeck) => {
+        res.json(savedDeck);
+      });
+    } else {
+      res.json({ msg: "Deck not found" });
+    }
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      error: "Internal server error",
+    });
+  });
+};
+
 const edit = (req, res, next) => {
   const { name, editedCard, cardIndex } = req.body;
 
@@ -135,6 +162,8 @@ const edit = (req, res, next) => {
       });
     });
 };
+
+
 
 const remove = (req, res, next) => {
   const { name, cardIndex } = req.body;
@@ -359,6 +388,7 @@ module.exports = {
   // creating decks and flashcards and editing and deleting cards
   create,
   add,
+  bulk_add,
 
   edit,
   remove,

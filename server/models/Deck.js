@@ -26,6 +26,13 @@ const deckSchema = new Schema({
         type: Number,
         required: true,
         default: 0
+    },
+    cards_introduced_today: {
+        type: Number,
+        default: 0
+    },
+    last_introduction: {
+        type: Date
     }
 }, {timestamps: true})
 

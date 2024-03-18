@@ -7,6 +7,7 @@ const FlashcardsConroller = require('../controllers/FlashcardsController')
 router.post('/create', FlashcardsConroller.create)
 
 router.put('/add', FlashcardsConroller.add)
+router.put('/bulk_add', FlashcardsConroller.bulk_add)
 router.put('/edit', FlashcardsConroller.edit)
 
 router.delete('/remove_card', FlashcardsConroller.remove)
