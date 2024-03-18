@@ -1,6 +1,8 @@
 const Deck = require("../models/Deck");
 const User = require("../models/User");
 
+const cardsPerDay = 10;  // amount of new cards to introduce each day
+
 function convertMillisecondsToTime(milliseconds) {
   const seconds = Math.floor(milliseconds / 1000);
   const minutes = Math.floor(seconds / 60);
@@ -43,6 +45,8 @@ function convertMilliseconds(milliseconds) {
 
   return `${years}:${months}:${days}:${hours}:${minutes}:${seconds}`;
 }
+
+
 
 const create = (req, res, next) => {
   const body = req.body;
@@ -193,11 +197,21 @@ const decks = (req, res, next) => {
     .then((decks) => {
       decks.forEach(deck => {
         const flashcards = deck.flashcards;
+
         console.log(flashcards);
-        currentTime = Date.now();
+        let currentTime = Date.now();
+        let cardsIntroduced = 0;
         let reviewCount = 0;
         let learningCount = 0;
         let newCount = 0;
+        if (!deck.last_introduction || ((currentTime - deck.last_introduction) >= 86400000)) {
+          console.log('new day')
+          deck.last_introduction = currentTime;
+        }
+        else {
+          cardsIntroduced = deck.cards_introduced_today;
+        }
+        console.log('cards introduced before: ' + cardsIntroduced)
         flashcards.forEach((card) => {
           const reviewed_time = Date.parse(card.reviewed_time);
           const next_review = card.next_review;
@@ -207,19 +221,32 @@ const decks = (req, res, next) => {
           const time_until_review = next_review + reviewed_time - currentTime;
           console.log(time_until_review);
 
-          if (time_until_review <= 0) {
-            reviewCount++;
+          if (!card.active && (cardsIntroduced < cardsPerDay)) {
+            card.active = true;
+            cardsIntroduced++;
           }
-
-          if (reviews <= 3 && (difficulty === 'Hard' || difficulty === 'Very Hard')) {
-            learningCount ++;
-          }
-
-          if (difficulty == 'New') {
-            newCount ++;
+          if (card.active) {
+            if (time_until_review <= 0) {
+              reviewCount++;
+            }
+  
+            if (reviews <= 3 && (difficulty === 'Hard' || difficulty === 'Very Hard')) {
+              learningCount ++;
+            }
+  
+            if (difficulty == 'New') {
+              newCount ++;
+            }
           }
 
         });
+        deck.cards_introduced_today = cardsIntroduced;
+        deck.save()
+        .then(savedDeck => {
+          console.log(savedDeck)
+          console.log(savedDeck);
+        })
+        console.log()
         const newObj = {
           ...deck.toObject(),
           to_review: reviewCount,
@@ -263,7 +290,7 @@ const to_review = (req, res) => {
         // Increment currentIndex for the next cardCopy if needed
         currentIndex++;
 
-        if (time_until_review <= 0) {
+        if (time_until_review <= 0 && card.active) {
           cards_to_review.push(cardCopy);
         }
       });
