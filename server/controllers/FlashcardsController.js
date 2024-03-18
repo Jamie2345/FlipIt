@@ -226,16 +226,16 @@ const decks = (req, res, next) => {
             cardsIntroduced++;
           }
           if (card.active) {
-            if (time_until_review <= 0) {
-              reviewCount++;
-            }
-  
             if (reviews <= 3 && (difficulty === 'Hard' || difficulty === 'Very Hard')) {
               learningCount ++;
             }
   
-            if (difficulty == 'New') {
+            else if (difficulty == 'New') {
               newCount ++;
+            }
+
+            else {
+              reviewCount++;
             }
           }
 
