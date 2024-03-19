@@ -46,6 +46,50 @@ function convertMilliseconds(milliseconds) {
   return `${years}:${months}:${days}:${hours}:${minutes}:${seconds}`;
 }
 
+function calculateWaitTime(difficulty1, difficulty2, reviews) {
+  function getDiffMultiplier(diff) {
+    console.log(diff);
+    const EASY_FACTOR = 2.5;
+    const GOOD_FACTOR = 1.8;
+    const NEW_FACTOR = 1.5;
+    const HARD_FACTOR = 1.2;
+    const VERY_HARD_FACTOR = 1.0;
+
+    let multiplier;
+    if (diff == "New") {
+      multiplier = NEW_FACTOR;
+    } else if (diff == "Easy") {
+      multiplier = EASY_FACTOR;
+    } else if (diff == "Good") {
+      multiplier = GOOD_FACTOR;
+    } else if (diff == "Hard") {
+      multiplier = HARD_FACTOR;
+    } else if (diff == "Very Hard") {
+      multiplier = VERY_HARD_FACTOR;
+    } else {
+      multiplier = GOOD_FACTOR;
+    }
+
+    return multiplier;
+  }
+
+  const multiplier1 = getDiffMultiplier(difficulty1);
+  const multiplier2 = getDiffMultiplier(difficulty2);
+
+  let time_to_wait =
+  (multiplier1 * multiplier2) ** 2 *
+    (reviews + 1) ** 1.75 *
+    1000 ** 2 +
+  300000; // 5 min smallest
+  const stoppingLim = 5097600000; // 2 months in milliseconds
+
+  if (time_to_wait > stoppingLim) {
+    time_to_wait = stoppingLim;
+  }
+  console.log('time to wait: ' + time_to_wait)
+  return time_to_wait;
+}
+
 
 
 const create = (req, res, next) => {
@@ -343,48 +387,11 @@ const next_card_time = (req, res) => {
 const answer = (req, res) => {
   const { name, cardIndex, difficulty } = req.body;
   console.log(difficulty);
-  function getDiffMultiplier(diff) {
-    console.log(diff);
-    const EASY_FACTOR = 2.5;
-    const GOOD_FACTOR = 1.8;
-    const NEW_FACTOR = 1.5;
-    const HARD_FACTOR = 1.2;
-    const VERY_HARD_FACTOR = 1.0;
-
-    let multiplier;
-    if (diff == "New") {
-      multiplier = NEW_FACTOR;
-    } else if (diff == "Easy") {
-      multiplier = EASY_FACTOR;
-    } else if (diff == "Good") {
-      multiplier = GOOD_FACTOR;
-    } else if (diff == "Hard") {
-      multiplier = HARD_FACTOR;
-    } else if (diff == "Very Hard") {
-      multiplier = VERY_HARD_FACTOR;
-    } else {
-      multiplier = GOOD_FACTOR;
-    }
-
-    return multiplier;
-  }
 
   Deck.findOne({ name: name, user: req.userInfo.username }).then((deck) => {
     if (deck) {
       const card = deck.flashcards[cardIndex];
-      const multiplier1 = getDiffMultiplier(difficulty);
-      const multiplier2 = getDiffMultiplier(card.difficulty);
-
-      let time_to_wait =
-        (multiplier1 * multiplier2) ** 2 *
-          (card.reviews + 1) ** 1.75 *
-          1000 ** 2 +
-        300000; // 5 min smallest
-      const stoppingLim = 5097600000; // 2 months in milliseconds
-
-      if (time_to_wait > stoppingLim) {
-        time_to_wait = stoppingLim;
-      }
+      let time_to_wait = calculateWaitTime(difficulty, card.difficulty, card.reviews)
 
       // Example usage
       let duration = convertMilliseconds(time_to_wait);
