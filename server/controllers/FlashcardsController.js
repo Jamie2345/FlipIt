@@ -225,7 +225,7 @@ const decks = (req, res, next) => {
             card.active = true;
             cardsIntroduced++;
           }
-          if (card.active) {
+          if (card.active && time_until_review <= 0) {  // if card is active and needs to be reviewed
             if (reviews <= 3 && (difficulty === 'Hard' || difficulty === 'Very Hard')) {
               learningCount ++;
             }
