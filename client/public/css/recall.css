@@ -117,8 +117,7 @@ body {
   justify-content: space-between;
 }
 
-.difficulty-btns button {
-  margin-right: 20px;
+.difficulty-btn button {
   cursor: pointer;
   padding: 5px 10px;
   border-radius: 5px;
@@ -127,7 +126,19 @@ body {
   border: 1px solid #fff;
 }
 
-.difficulty-btns button:last-child {
+.difficulty-btn {
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.difficulty-btn span {
+  margin-bottom: 10px;
+  font-size: .9em;
+}
+
+.difficulty-btns .difficulty-btn:last-of-type {
   margin-right: 0;
 }
 

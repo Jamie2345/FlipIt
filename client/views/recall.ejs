@@ -17,10 +17,22 @@
     <div class="cards-container">
     </div>
     <div class="difficulty-btns">
-      <button id="easy-btn" onclick="submitDifficulty(this)">Easy</button>
-      <button id="good-btn" onclick="submitDifficulty(this)">Good</button>
-      <button id="hard-btn" onclick="submitDifficulty(this)">Hard</button>
-      <button id="very-hard-btn" onclick="submitDifficulty(this)">Very Hard</button>
+      <div class="difficulty-btn">
+        <span id="easy-wait">3h</span>
+        <button id="easy-btn" onclick="submitDifficulty(this)">Easy</button>
+      </div>
+      <div class="difficulty-btn">
+        <span id="good-wait">2h</span>
+        <button id="good-btn" onclick="submitDifficulty(this)">Good</button>
+      </div>
+      <div class="difficulty-btn">
+        <span id="hard-wait">48m</span>
+        <button id="hard-btn" onclick="submitDifficulty(this)">Hard</button>
+      </div>
+      <div class="difficulty-btn">
+        <span id="very-hard-wait">30m</span>
+        <button id="very-hard-btn" onclick="submitDifficulty(this)">Very Hard</button>
+      </div>
     </div>
   </div>
   <script>

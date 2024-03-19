@@ -2,6 +2,70 @@ let difficultyBtnsActive = false;
 let cardStack = []
 let currentIndex = 0;
 
+function convertMillisecondsToTime(milliseconds) {
+    const seconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+  
+    if (months >= 1) {
+      return months + " m";
+    } else if (days >= 1) {
+      return days + " d";
+    } else if (hours >= 1) {
+      return hours + " h";
+    } else if (minutes >= 1) {
+      return minutes + " m";
+    } else {
+      return seconds + " s";
+    }
+}
+
+function calculateWaitTime(difficulty1, difficulty2, reviews) {
+    function getDiffMultiplier(diff) {
+        console.log(diff);
+        const EASY_FACTOR = 2.5;
+        const GOOD_FACTOR = 1.8;
+        const NEW_FACTOR = 1.5;
+        const HARD_FACTOR = 1.2;
+        const VERY_HARD_FACTOR = 1.0;
+
+        let multiplier;
+        if (diff == "New") {
+            multiplier = NEW_FACTOR;
+        } else if (diff == "Easy") {
+            multiplier = EASY_FACTOR;
+        } else if (diff == "Good") {
+            multiplier = GOOD_FACTOR;
+        } else if (diff == "Hard") {
+            multiplier = HARD_FACTOR;
+        } else if (diff == "Very Hard") {
+            multiplier = VERY_HARD_FACTOR;
+        } else {
+            multiplier = GOOD_FACTOR;
+        }
+
+        return multiplier;
+    }
+
+    const multiplier1 = getDiffMultiplier(difficulty1);
+    const multiplier2 = getDiffMultiplier(difficulty2);
+
+    let time_to_wait =
+    (multiplier1 * multiplier2) ** 2 *
+        (reviews + 1) ** 1.75 *
+        1000 ** 2 +
+    300000; // 5 min smallest
+    const stoppingLim = 5097600000; // 2 months in milliseconds
+
+    if (time_to_wait > stoppingLim) {
+        time_to_wait = stoppingLim;
+    }
+    console.log('time to wait: ' + time_to_wait)
+    return time_to_wait;
+}
+
 function displayNextCardTime(deck) {
     fetch(`/api/nearest_card_time?deck=${deck}`, {
         method: 'GET',
@@ -124,6 +188,33 @@ function adjustFontSize(card, frontText, backText) {
 }
 
 function displayDifficultyBtns() {
+    const currentCard = cardStack[currentIndex];
+    const difficulty = currentCard.difficulty;
+    const reviews = currentCard.reviews
+
+    const easyTimeMilliseconds = calculateWaitTime(difficulty, 'Easy', reviews);
+    const goodTimeMilliseconds = calculateWaitTime(difficulty, 'Good', reviews);
+    const hardTimeMilliseconds = calculateWaitTime(difficulty, 'Hard', reviews);
+    const veryHardTimeMilliseconds = calculateWaitTime(difficulty, 'Very Hard', reviews);
+
+    const easyTime = convertMillisecondsToTime(easyTimeMilliseconds);
+    const goodTime = convertMillisecondsToTime(goodTimeMilliseconds);
+    const hardTime = convertMillisecondsToTime(hardTimeMilliseconds);
+    const veryHardTime = convertMillisecondsToTime(veryHardTimeMilliseconds);   
+
+    const easyWaitObj = document.getElementById('easy-wait');
+    const goodWaitObj = document.getElementById('good-wait');
+    const hardWaitObj = document.getElementById('hard-wait');
+    const veryHardWaitObj = document.getElementById('very-hard-wait');
+
+    easyWaitObj.innerHTML = easyTime;
+    goodWaitObj.innerHTML = goodTime;
+    hardWaitObj.innerHTML = hardTime;
+    veryHardWaitObj.innerHTML = veryHardTime;
+
+    console.log(easyTime, goodTime, hardTime, veryHardTime);
+
+    console.log(currentCard)
     const btnsContainer = document.querySelector('.difficulty-btns');
     btnsContainer.style.display = 'flex';
 }
