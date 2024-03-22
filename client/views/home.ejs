@@ -1,36 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/homepage.css">
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.7.0/fonts/remixicon.css" rel="stylesheet">
-</head>
-<body>
-  <div class="main-home-container">
-    <div class="table-container">
-      
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/homepage.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.7.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="main-home-container">
+      <table class="decks-table">
+        <thead>
+          <tr>
+            <th class="left-align">Deck</th>
+            <th>New</th>
+            <th>Learn</th>
+            <th>Due</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <button id="new-deck-btn" onclick="deckPopup()">
+        <i class="ri-add-fill plus-icon"></i> New Deck
+      </button>
     </div>
-    <table class="decks-table">
-      <thead>
-        <tr>
-          <th class="left-align">Deck</th>
-          <th>New</th>
-          <th>Learn</th>
-          <th>Due</th>
-        </tr>
-      </thead>
-      <tbody id="table-body">
-      </tbody>
-    </table>
-    <a href="/create" id="new-deck-btn"><i class="ri-add-fill plus-icon"></i> New Deck</a>
-  </div>
-  <script src="/js/subtoggle.js"></script>
-  <script src="/js/deckstable.js"></script>
-  <script>
-    displayDecks();
-  </script>
-</body>
+    <div class="pop-up" id="createPopup">
+      <button class="popup-close">×</button>
+      <h1>New Deck</h1>
+      <input type="text" id="deck-name-input" placeholder="Enter Name" />
+      <div id="option-btns-container">
+        <button id="add-btn" type="button" class="save-btn" onclick="newDeck()">
+          Add
+        </button>
+        <button type="button" class="cancel-btn">Cancel</button>
+      </div>
+    </div>
+    <script src="/js/subtoggle.js"></script>
+    <script src="/js/deckstable.js"></script>
+    <script>
+      displayDecks();
+
+      function deckPopup() {
+        const popup = document.getElementById("createPopup");
+        popup.classList.remove("hide-popup");
+        popup.classList.add("active");
+      }
+
+      const popup = document.getElementById("createPopup");
+
+      const closePopup = document.querySelector(".popup-close");
+      console.log(closePopup);
+      closePopup.addEventListener("click", () => {
+        popup.classList.remove("active");
+      });
+
+      const cancelBtn = document.querySelector(".cancel-btn");
+      cancelBtn.addEventListener("click", () => {
+        popup.classList.remove("active");
+      });
+
+      const inputBox = document.getElementById("deck-name-input");
+
+      function newDeck() {
+        const deckName = inputBox.value;
+        if (deckName) {
+          data = {
+            name: deckName,
+          };
+
+          fetch("/api/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+            credentials: "include", // include cookies
+          })
+            .then((response) => {
+              if (!response.ok) {
+                if (response.status === 409) {
+                  alert('A deck with that name already exists please choose a unique name')
+                }
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log(data);
+              window.location.reload();
+            });
+        }
+      }
+    </script>
+  </body>
 </html>
