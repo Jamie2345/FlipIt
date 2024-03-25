@@ -164,29 +164,6 @@ function flipCard(card) {
     }
 }
 
-function adjustFontSize(card, frontText, backText) {
-    console.log('adjustFontSize')
-    // Get the width of the card
-    var cardWidth = 300;
-    var cardHeight = 600;
-    console.log(cardWidth);
-
-    // Get the length of the text on both sides
-    var frontTextLength = frontText.textContent.length;
-    var backTextLength = backText.textContent.length;
-
-    console.log(frontTextLength);
-    var cardArea = cardWidth + cardHeight;  // I know area is b*h so this isn't entirely true but it works
-    console.log(cardArea);
-    
-    // Calculate the font size based on the longer text and card width
-    var frontSize = Math.floor(cardArea / frontTextLength);
-    var backSize = Math.floor(cardArea / backTextLength);
-    // Apply the calculated font size to both sides
-    frontText.style.fontSize = frontSize + "px";
-    backText.style.fontSize = backSize + "px";
-}
-
 function displayDifficultyBtns() {
     const currentCard = cardStack[currentIndex];
     const difficulty = currentCard.difficulty;

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/deckpage.css">
+    <script>
+        const DECKNAME = "<%= name %>"
+        console.log(DECKNAME)
+    </script>
+    <script src="/js/deckpage.js" defer></script>
+</head>
+<body>
+    <div class="main-home-container">
+        <div class="deck-info-container">
+            <h1 id="deck-name"><%= name %></h1>
+            <div class="stats-and-buttons-container">
+                <div class="learning-stats-container">
+                    <div class="stat-container">
+                        <h2 class="stat">New: </h2>
+                        <h2 id="new-cards"></h2>
+                    </div>
+                    <div class="stat-container">
+                        <h2 class="stat">Learning: </h2>
+                        <h2 id="learning-cards"></h2>
+                    </div>
+                    <div class="stat-container">
+                        <h2 class="stat">To Review: </h2>
+                        <h2 id="due-cards"></h2>
+                    </div>
+                </div>
+                <div class="buttons-container">
+                    <a href="/edit/<%= name %>" id="edit-cards">Add / Edit</a>
+                    <a href="/review/<%= name %>" id="review-cards">Review Cards</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

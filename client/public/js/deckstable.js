@@ -17,7 +17,7 @@ function displayDecks() {
       const decksTableBody = document.getElementById('table-body');
       decks.forEach(deck => {
         const name = deck.name
-        const review_link = `/review/${name}`
+        const review_link = `/deck/${name}`
         const learning = deck.learning
         const new_cards = deck.new
         const due = deck.to_review

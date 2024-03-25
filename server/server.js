@@ -53,10 +53,21 @@ app.get("/home", authenticate, (req, res) => {
   res.render("home");
 });
 
+app.get("/deck/:deckname", authenticate, (req, res) => {
+  const name = req.params.deckname
+  console.log(name);
+  res.render("deck", {name: name});
+});
+
 app.get("/review/:deckname", authenticate, (req, res) => {
   const name = req.params.deckname
   console.log(name);
   res.render("recall", {name: name});
+});
+
+app.get("/edit/:deckname", authenticate, (req, res) => {
+  const name = req.params.deckname
+  res.render("edit", {name: name});
 });
 
 server.listen(port, () => {

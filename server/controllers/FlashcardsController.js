@@ -235,6 +235,68 @@ const remove = (req, res, next) => {
     });
 };
 
+const deck = (req, res, next) => {
+  const name = req.query.deck;
+
+  let currentTime = Date.now();
+  let cardsIntroduced = 0;
+  let reviewCount = 0;
+  let learningCount = 0;
+  let newCount = 0;
+
+  Deck.findOne({ name: name, user: req.userInfo.username })
+  .then(deck => {
+    if (deck) {
+      const flashcards = deck.flashcards;
+      if (!deck.last_introduction || ((currentTime - deck.last_introduction) >= 86400000)) {
+        console.log('new day')
+        deck.last_introduction = currentTime;
+      }
+      else {
+        cardsIntroduced = deck.cards_introduced_today;
+      }
+      console.log('cards introduced before: ' + cardsIntroduced)
+      flashcards.forEach((card) => {
+        const reviewed_time = Date.parse(card.reviewed_time);
+        const next_review = card.next_review;
+        const reviews = card.reviews;
+        const difficulty = card.difficulty;
+
+        const time_until_review = next_review + reviewed_time - currentTime;
+        console.log(time_until_review);
+
+        if (!card.active && (cardsIntroduced < cardsPerDay)) {
+          card.active = true;
+          cardsIntroduced++;
+        }
+        if (card.active && time_until_review <= 0) {  // if card is active and needs to be reviewed
+          if (reviews <= 3 && (difficulty === 'Hard' || difficulty === 'Very Hard')) {
+            learningCount ++;
+          }
+
+          else if (difficulty == 'New') {
+            newCount ++;
+          }
+
+          else {
+            reviewCount++;
+          }
+        }
+      });
+      const newObj = {
+        ...deck.toObject(),
+        to_review: reviewCount,
+        learning: learningCount,
+        new: newCount,
+      }
+      return res.status(200).json(newObj)
+    }
+    else {
+      return res.status(400).json({msg: 'A deck with this name could not be found.'});
+    }
+  })
+};
+
 const decks = (req, res, next) => {
   const allDecks = [];
   Deck.find({ user: req.userInfo.username })
@@ -428,6 +490,7 @@ module.exports = {
   remove,
 
   // getting decks
+  deck,
   decks,
   to_review,
   next_card_time,

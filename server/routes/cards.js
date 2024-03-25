@@ -13,6 +13,7 @@ router.put('/edit', FlashcardsConroller.edit)
 router.delete('/remove_card', FlashcardsConroller.remove)
 
 // get flashcards and decks
+router.get('/deck', FlashcardsConroller.deck)
 router.get('/decks', FlashcardsConroller.decks)
 
 router.get('/review', FlashcardsConroller.to_review)

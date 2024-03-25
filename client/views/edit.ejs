@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/editpage.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.7.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script src="/js/editpage.js"></script>
+    <script>
+      const DECKNAME = "<%= name %>";
+    </script>
+    <script>
+      console.log(DECKNAME);
+    </script>
+  </head>
+  <body>
+    <div class="jump-to-container">
+      <input
+        type="number"
+        id="jump-input"
+        min="1"
+        max="9999"
+        placeholder="Skip"
+      />
+      <button id="jump-btn">Go</button>
+    </div>
+    <button id="add-btn" onclick="addPopup()">Add Card</button>
+    <div class="main-flashcards-container">
+      <div class="toggle-question-container">
+        <button id="left-btn" class="arrow-btn" onclick="prevCard()">
+          <i class="ri-arrow-left-line arrow-icon"></i>
+        </button>
+        <div id="edit-number-display">
+          <span id="current-question-number"></span>/<span
+            id="total-questions"
+          ></span>
+        </div>
+        <button id="right-btn" class="arrow-btn" onclick="nextCard()">
+          <i class="ri-arrow-right-line arrow-icon"></i>
+        </button>
+      </div>
+      <div class="cards-container"></div>
+    </div>
+    <div class="pop-up" id="cardPopup">
+      <button class="popup-close">×</button>
+      <h1>New Card</h1>
+      <input type="text" id="card-question-input" placeholder="Front" />
+      <input type="text" id="card-answer-input" placeholder="Back" />
+      <div id="option-btns-container">
+        <button
+          id="save-btn"
+          type="button"
+          class="save-btn"
+          onclick="addCard()"
+        >
+          Add
+        </button>
+        <button type="button" class="cancel-btn">Cancel</button>
+      </div>
+    </div>
+    <script>
+      displayCards(DECKNAME);
+    </script>
+    <script>
+      const jumpBtn = document.getElementById("jump-btn");
+      const jumpInput = document.getElementById("jump-input");
+      jumpBtn.addEventListener("click", () => {
+        jumpTo(jumpInput.value);
+      });
+    </script>
+    <script>
+      function addPopup() {
+        const popup = document.getElementById("cardPopup");
+        popup.classList.remove("hide-popup");
+        popup.classList.add("active");
+      }
+
+      const popup = document.getElementById("cardPopup");
+
+      const closePopup = document.querySelector(".popup-close");
+      console.log(closePopup);
+      closePopup.addEventListener("click", () => {
+        popup.classList.remove("active");
+      });
+
+      const cancelBtn = document.querySelector(".cancel-btn");
+      cancelBtn.addEventListener("click", () => {
+        popup.classList.remove("active");
+      });
+
+      const cardQuestion = document.getElementById("card-question-input");
+      const cardAnswer = document.getElementById("card-answer-input");
+
+      function addCard() {
+        const question = cardQuestion.value;
+        const answer = cardAnswer.value;
+        const card = {
+            question: question,
+            answer: answer,
+        }
+
+        console.log(question, answer);
+
+        const data = {
+          name: DECKNAME,
+          card: card,
+        };
+
+        fetch("/api/add", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+          credentials: "include", // include cookies
+        })
+          .then((response) => {
+            if (!response.ok) {
+              if (response.status === 409) {
+                alert(
+                  "A deck with that name already exists please choose a unique name"
+                );
+              }
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            appendCard(card);
+
+            // close popup
+            popup.classList.remove("active");
+            cardQuestion.value = '';
+            cardAnswer.value = '';
+          });
+      }
+    </script>
+  </body>
+</html>
