@@ -13,7 +13,7 @@
   
   .cards-container {
     width: 100vw;
-    height: 80vh;
+    height: 75vh;
     max-width: 300px;
     max-height: 600px;
     display: flex;
@@ -29,7 +29,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 80vh;
+    height: 70vh;
     max-width: 300px;
     max-height: 600px;
     color: #000;
@@ -232,10 +232,8 @@
     height: 50vh;
     background-color: var(--secondary);
     color: #fff;
-    top: 40%;
     visibility: hidden;
     opacity: 0;
-    position: fixed;
     top: 40%;
     left: 50%;
     width: 100%;
@@ -243,6 +241,12 @@
     transform: translate(-50%, -50%);
     box-shadow: 0 5px 30px rgba(0,0,0,0.30);
     transition: 0.5s all;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    z-index: 9999;
   }
   
   .hidden {
@@ -270,13 +274,7 @@
     color: var(--text-color);
   }
   
-  .pop-up {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: column;
-    z-index: 9999;
-  }
+
   
   #option-btns-container {
     display: flex;
@@ -297,11 +295,11 @@
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   }
   
-  .save-btn {
+  .save-btn, .delete-confirm {
     background-color: var(--tertiary);
   }
   
-  .cancel-btn, .delete-btn {
+  .cancel-btn, .delete-btn, #no-delete-btn {
     background-color: red;
   }
   
@@ -315,6 +313,7 @@
     border: none;
     outline: none;
   }
+
   
   #edit-description-input:focus, #edit-name-input:focus {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -329,10 +328,17 @@
     display: flex;
   }
   
-  #deletePopup {
-    height: 30vh;
-  }
-  
   #new-deck-btn {
     border: none;
+  }
+
+  #delete-card-btn {
+    background-color: red;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    margin-top: 10px;
   }

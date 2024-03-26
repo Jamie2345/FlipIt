@@ -178,7 +178,7 @@ function appendCard(card) {
         const computedStyle = window.getComputedStyle(lastCard);
 
         // Read the z-index property
-        zIndex = computedStyle.getPropertyValue('z-index') - 1;
+        zIndex = parseInt(computedStyle.getPropertyValue('z-index')) - 1;
     }
 
     console.log(zIndex);
@@ -212,4 +212,31 @@ function appendCard(card) {
 
     const totalQuestions = document.getElementById('total-questions');
     totalQuestions.innerHTML = allCards.length + 1;
+}
+
+function removeCardDisplay() {
+    const allCards = document.querySelectorAll('.card');
+    const currentCard = allCards[currentIndex]
+    currentCard.remove();
+
+    for (i = currentIndex+1; i < allCards.length; i++) {
+        const card = allCards[i];
+        const computedStyle = window.getComputedStyle(card);
+
+        // Read the z-index property
+        zIndex = parseInt(computedStyle.getPropertyValue('z-index')) + 1;
+        console.log(zIndex);
+
+        card.style.zIndex = zIndex;
+    }
+
+    const totalQuestions = document.getElementById('total-questions');
+    totalQuestions.innerHTML = allCards.length - 1;
+
+    if (currentIndex >= allCards.length-1) {
+        currentIndex--;
+    }
+
+    nextCard();
+    prevCard();
 }
