@@ -10,6 +10,10 @@
     background: none;
   }
   
+  #card-index-p {
+    font-size: .8em;
+  }
+
   .cards-container {
     width: 100vw;
     height: 80vh;
@@ -21,6 +25,10 @@
     text-align: center;
     flex-direction: column;
   }
+
+  .index-hidden {
+    display: none;
+  }
   
   .card {
     position: absolute;
@@ -28,7 +36,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 80vh;
+    height: 75vh;
     max-width: 300px;
     max-height: 600px;
     color: #000;
@@ -99,10 +107,6 @@
       pointer-events: none;
     }
   }
-
-.cards-container {
-  margin-bottom: 20px;
-}
   
 .difficulty-btns {
   display: flex;

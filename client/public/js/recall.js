@@ -30,7 +30,7 @@ function calculateWaitTime(difficulty1, difficulty2, reviews) {
         const NEW_FACTOR = 1.5;
         const HARD_FACTOR = 1.2;
         const VERY_HARD_FACTOR = 1.0;
-
+        
         let multiplier;
         if (diff == "New") {
             multiplier = NEW_FACTOR;
@@ -48,13 +48,13 @@ function calculateWaitTime(difficulty1, difficulty2, reviews) {
 
         return multiplier;
     }
-
+    
     const multiplier1 = getDiffMultiplier(difficulty1);
     const multiplier2 = getDiffMultiplier(difficulty2);
 
     let time_to_wait =
     (multiplier1 * multiplier2) ** 2 *
-        (reviews + 1) ** 1.75 *
+    (reviews + 1) ** 1.75 *
         1000 ** 2 +
     300000; // 5 min smallest
     const stoppingLim = 5097600000; // 2 months in milliseconds
@@ -64,6 +64,21 @@ function calculateWaitTime(difficulty1, difficulty2, reviews) {
     }
     console.log('time to wait: ' + time_to_wait)
     return time_to_wait;
+}
+
+function displayIndex(index) {
+    const currentIndexSpan = document.getElementById('card-index-span');
+    currentIndexSpan.innerHTML = index;
+}
+
+function hideIndex() {
+    const currentIndexP = document.getElementById('card-index-p');
+    currentIndexP.classList.add('index-hidden')
+}
+
+function showIndex() {
+    const currentIndexP = document.getElementById('card-index-p');
+    currentIndexP.classList.remove('index-hidden')
 }
 
 function displayNextCardTime(deck) {
@@ -92,9 +107,6 @@ function displayNextCardTime(deck) {
 
 function getCards(deck) {
     console.log('get cards')
-    const data = {
-        name: deck
-    }
 
     fetch(`/api/review?deck=${deck}`, {
         method: 'GET',
@@ -127,6 +139,10 @@ function getCards(deck) {
             zIndex--;
             if (cardIndex !== 0) {
                 cardObj.classList.add('hidden');
+            }
+            else {
+                showIndex();
+                displayIndex(card.cardIndex)  // note this is different to the cardIndex counter this is the index of the card in the entire deck but the counter is just the counter within the cards returned
             }
             cardIndex ++;
         
@@ -237,6 +253,7 @@ function submitDifficulty(btn) {
 function nextCard() {
     const allCards = document.querySelectorAll('.card');
     const currentCard = allCards[currentIndex];
+
     currentCard.classList.remove('flip');
 
     hideDifficultyBtns()
@@ -248,6 +265,7 @@ function nextCard() {
         completeMsg.innerHTML = 'Deck Complete';
         const cardsContainer = document.querySelector('.cards-container');
         cardsContainer.appendChild(completeMsg);
+        hideIndex();
         setTimeout(function() {
             window.location.reload();
         }, 3000);
@@ -255,9 +273,13 @@ function nextCard() {
     else {
         const nextCard = allCards[currentIndex + 1];
         nextCard.classList.remove('hidden');
+
+        currentIndex++;
+
+        const cardInfo = cardStack[currentIndex]
+        displayIndex(cardInfo.cardIndex);
     }
     currentCard.classList.add('slide');
     // currentCard.style.zIndex = (cardStack.length + 10) - currentIndex;
     //currentCard.classList.add('hidden');
-    currentIndex++;
 }
