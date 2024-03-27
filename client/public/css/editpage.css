@@ -303,9 +303,9 @@
     background-color: red;
   }
   
-  .pop-up input {
+  .pop-up input, .pop-up textarea {
     width: 75%;
-    max-height: 50px;
+    max-height: 100px;
     padding: 10px;
     border-radius: 5px;
     transition: 1s;
@@ -314,6 +314,18 @@
     outline: none;
   }
 
+  #editPopup {
+    height: 75vh;
+  }
+
+  #deletePopup {
+    max-height: 200px;
+  }
+
+  #deletePopup h1 {
+    font-size: 1.5em;
+    margin-top: 20px;
+  }
   
   #edit-description-input:focus, #edit-name-input:focus {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -332,6 +344,13 @@
     border: none;
   }
 
+  .edit-delete-container {
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+
   #delete-card-btn {
     background-color: red;
     color: #fff;
@@ -340,5 +359,16 @@
     cursor: pointer;
     border: none;
     outline: none;
-    margin-top: 10px;
+    margin-left: 10px;
+  }
+
+  #edit-btn {
+    background-color: var(--tertiary);
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    margin-right: 10px;
   }

@@ -45,7 +45,10 @@
         </button>
       </div>
       <div class="cards-container"></div>
-      <button id="delete-card-btn" onclick="deletePopup()">Delete Card</button>
+      <div class="edit-delete-container">
+        <button id="edit-btn" onclick="editPopup()">Edit Card</button>
+        <button id="delete-card-btn" onclick="deletePopup()">Delete Card</button>
+      </div>
     </div>
     <div class="pop-up" id="cardPopup">
       <button class="popup-close">×</button>
@@ -60,6 +63,25 @@
           onclick="addCard()"
         >
           Add
+        </button>
+        <button type="button" class="cancel-btn">Cancel</button>
+      </div>
+    </div>
+    <div class="pop-up" id="editPopup">
+      <button class="popup-close">×</button>
+      <h1>Edit Card</h1>
+      
+      <textarea name="edit-question-area" id="card-question-edit" cols="30" rows="10"></textarea>
+      <textarea name="edit-answer-area" id="card-answer-edit" cols="30" rows="10"></textarea>
+     
+      <div id="option-btns-container">
+        <button
+          id="edit-save-btn"
+          type="button"
+          class="save-btn"
+          onclick="editCard()"
+        >
+          Edit
         </button>
         <button type="button" class="cancel-btn">Cancel</button>
       </div>
@@ -107,6 +129,31 @@
         popup.classList.add("active");
       }
 
+      function editPopup() {
+        closeAllPopups();
+
+        const allCards = document.querySelectorAll(".card")
+        const currentCard = allCards[currentIndex];
+
+        console.log(currentCard)
+        const cardFront = currentCard.querySelector('.front')
+        const cardBack = currentCard.querySelector('.back')
+
+        console.log(cardFront, cardBack)
+        
+        const popup = document.getElementById("editPopup");
+        const questionEdit = document.getElementById("card-question-edit")
+        const answerEdit = document.getElementById("card-answer-edit")
+
+        console.log(questionEdit, answerEdit)
+
+        questionEdit.value = cardFront.innerHTML;
+        answerEdit.value = cardBack.innerHTML
+        
+        popup.classList.remove("hide-popup");
+        popup.classList.add("active");
+      }
+
       function deletePopup() {
         closeAllPopups();
         const popup = document.getElementById("deletePopup");
@@ -120,10 +167,12 @@
         });
       });
 
-      const cancelBtn = document.querySelector(".cancel-btn");
-      cancelBtn.addEventListener("click", () => {
-        closeAllPopups();
-      });
+      const cancelBtns = document.querySelectorAll(".cancel-btn");
+      cancelBtns.forEach(cancelBtn => {
+        cancelBtn.addEventListener("click", () => {
+          closeAllPopups();
+        });
+      })
 
       const arrowBtns = document.querySelectorAll(".arrow-btn");
       arrowBtns.forEach((arrow) => {
@@ -213,6 +262,57 @@
             }
             console.log(data);
             removeCardDisplay();
+            closeAllPopups();
+          });
+      }
+
+      function editCard() {
+        const questionInput = document.getElementById('card-question-edit');
+        const answerInput = document.getElementById('card-answer-edit');
+
+        const question = questionInput.value;
+        const answer = answerInput.value;
+
+        const data = {
+          name: DECKNAME,
+          cardIndex: currentIndex,
+          editedCard: {
+            question: question,
+            answer: answer
+          }
+        }
+
+        fetch("/api/edit", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+          credentials: "include", // include cookies
+        })
+          .then((response) => {
+            if (!response.ok) {
+              alert("Error deleting card");
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.msg) {
+              alert("Deck could not be found");
+              return;
+            }
+
+            // edit the card on the user side.
+            const allCards = document.querySelectorAll(".card")
+            const currentCard = allCards[currentIndex];
+
+            const cardFront = currentCard.querySelector('.front')
+            const cardBack = currentCard.querySelector('.back')
+
+            cardFront.innerHTML = question;
+            cardBack.innerHTML = answer;
+
             closeAllPopups();
           });
       }
